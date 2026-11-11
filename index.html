@@ -82,6 +82,8 @@ nav button i{display:grid;place-items:center}
 .seg button{flex:1;border:0;background:none;color:var(--m);padding:8px;border-radius:99px;font:inherit;font-weight:700;cursor:pointer;min-height:42px}.seg button.on{background:var(--t);color:#07070d}
 @media(max-width:760px){nav{left:8px;right:8px;padding:6px 4px}nav button{padding:8px 0;font-size:11px;gap:3px}nav button svg{width:24px;height:24px}.seg{max-width:none}.wk{grid-template-columns:1fr 1fr}.card{padding:14px}}
 .seg{overflow-x:auto}.seg button{white-space:nowrap;flex:none;padding:8px 14px}
+.mus:hover,.mus:focus{filter:brightness(1.25) drop-shadow(0 0 6px #fff6);outline:none}
+.mus[data-key].active{stroke:#fff;stroke-width:2.5}
 </style></head><body>
 <div id="app"><nav id="nav"></nav><main id="main"></main></div>
 <div id="toast"></div><div id="rest"></div>
@@ -284,8 +286,8 @@ const IMP=[{"d":"2026-11-05","pid":"sirt","note":"İlk gün yarın diyetimin oyu
 const nz=x=>x!==undefined&&x!==null&&x!==''&&!isNaN(+x);
 const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
 const TEND=['dirsek','bilek','önkol','parmak'];
-const TG=[[/parmak/i,['parmak','önkol']],[/barfiks|lat |row|çekiş|pulldown/i,['sırt','önkol']],[/biceps|z bar|hammer/i,['dirsek','biceps','önkol']],[/triceps|dips/i,['dirsek','triceps']],[/bench|press|fly|omuz/i,['omuz','göğüs']],[/squat|leg|deadlift|calf/i,['bacak']],[/rotasyon|içe|dış|yuvarlama/i,['dirsek','bilek','önkol']],[/basınç|yana|eklem|statik|çapraz/i,['dirsek','bilek']],[/bilek|sehpada|ön bilek/i,['bilek','önkol']]];
-function tagsOf(n,pid){if(pid=='masa')return['dirsek','bilek','omuz','masa'];const o=new Set();let hit=false;for(const[r,t]of TG){if(r.test(n)){t.forEach(x=>o.add(x));hit=true;if(/parmak|barfiks|biceps|triceps|bench|squat|leg |rotasyon|basınç|bilek/i.test(n))break}}return[...o]}
+const TG=[[/parmak/i,['parmak','önkol']],[/barfiks|lat |row|çekiş|pulldown/i,['sırt','önkol','omuz']],[/biceps|z bar|hammer/i,['dirsek','biceps','önkol']],[/triceps|dips/i,['dirsek','triceps']],[/bench|press|fly|omuz/i,['omuz','göğüs']],[/squat|leg press|quad/i,['quad','bacak']],[/romanian|deadlift|hamstring|leg curl/i,['hamstring','bacak']],[/calf|baldır/i,['baldır','bacak']],[/rotasyon|içe|dış|yuvarlama/i,['dirsek','bilek','önkol']],[/basınç|yana|eklem|statik|çapraz/i,['dirsek','bilek']],[/bilek|sehpada|ön bilek/i,['bilek','önkol']],[/karın|abs|core|crunch/i,['karın']],[/bel|lower back|hip/i,['bel','sırt']]];
+function tagsOf(n,pid){if(pid=='masa')return['dirsek','bilek','omuz','masa'];const o=new Set();let hit=false;for(const[r,t]of TG){if(r.test(n)){t.forEach(x=>o.add(x));hit=true;if(/parmak|barfiks|biceps|triceps|bench|squat|leg |rotasyon|basınç|bilek|calf|hamstring|quad/i.test(n))break}}return[...o]}
 function catOf(n,pid){if(pid=='masa')return'Masa antrenmanı';if(/statik/i.test(n))return'Statik tutuş';if(/ters basınç/i.test(n))return'Back pressure';if(/yana|basınç/i.test(n))return'Side pressure';if(/iç rotasyon|içe/i.test(n))return'İç rotasyon';if(/dış|rotasyon/i.test(n))return'Dış rotasyon';if(/hammer/i.test(n))return'Hammer (pronation/supination)';if(/parmak/i.test(n))return'Parmak kuvveti';if(/başlangıç|patlay/i.test(n))return'Patlayıcı başlangıç';if(/bilek|sehpada/i.test(n))return'Bilek fleksiyonu';return''}
 function sess(u,d){const lg=u.logs[d];if(!lg)return null;let s=0,r=0,v=0,td=0,f=[],pn=[],tg={},ct={},R=0,L=0,names=[];
  Object.values(lg.ex||{}).forEach(e=>{const c=(e.sets||[]).filter(x=>x&&x.d);if(!c.length)return;const tags=tagsOf(e.n,lg.pid),cat=catOf(e.n,lg.pid);names.push(e.n);if(tags.some(t=>TEND.includes(t)))td+=c.length;
@@ -470,10 +472,10 @@ function recPanel(){const u=U(),t=today(),ss=allSess(u,t),ds=[...Array(7)].map((
  return `<h2>Toparlanma analizi</h2><div class="card"><div class="row"><b>${lab}</b></div><div class="m" style="margin-top:4px">${sc.v!=null?`Hazırlık göstergesi %${sc.v} (doğrulanmış bir skor değil; bileşenleri analiz raporunda).`:'Hazırlık göstergesi için antrenman öncesi verini gir.'}</div>
  <div class="m" style="margin-top:10px">Son 7 gün yorgunluk eğilimi</div>${pts.length>=2&&has7(u,t)>=7?`<svg viewBox="0 0 300 70" width="100%"><polyline fill="none" stroke="#fff" stroke-width="2" points="${pts.map(p=>p.join(',')).join(' ')}"/>${pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="#fff"/>`).join('')}</svg>`:`<div class="m">Grafik 7 antrenman günü kaydedildikten sonra görünür (${has7(u,t)} / 7).</div>`}</div>
  <div class="bento" style="margin-bottom:12px">${it('Uyku kalitesi (7 gün ort.)',us.length?'%'+Math.round(avg(us)):'veri yok')}${it('En yüksek ağrı (7 gün)',ag.length?'%'+Math.max(...ag):'veri yok')}${it('Son antrenman',last?(dn(t)-dn(last.d)?(dn(t)-dn(last.d))+' gün önce':'bugün'):'kayıt yok')}${it('7 gün yükü',a7.sets+' set'+(pv>0?` (önceki haftalar ort. ${pv.toFixed(0)})`:''))}${it('Beslenme',kb.length?`~${Math.round(avg(kb))} g karb. (ort.)`:'veri yok')}${it('Genel hazırlık',sc.v!=null?'%'+sc.v:'—')}</div>`}
-const REG=[['Bilek','bilek',1],['Ön kol','önkol',1],['Dirsek','dirsek',1],['Biceps','biceps',0],['Triceps','triceps',0],['Omuz','omuz',0],['Sırt','sırt',0],['Göğüs','göğüs',0],['Bacaklar','bacak',0]];
-function regionLoad(u,now){const R={},g=(n,sd)=>R[n+sd]=R[n+sd]||{n,sd,last:null,s7:0,s30:0,d30:new Set(),pr:0,pain:[],notes:[]};
+const REG=[['Bilek','bilek',1],['Ön kol','önkol',1],['Dirsek','dirsek',1],['Biceps','biceps',1],['Triceps','triceps',1],['Omuz','omuz',1],['Sırt','sırt',0],['Göğüs','göğüs',0],['Karın','karın',0],['Bel','bel',0],['Quadriceps','quad',0],['Hamstring','hamstring',0],['Baldır','baldır',0],['Bacaklar','bacak',0]];
+function regionLoad(u,now){const R={},g=(n,sd)=>R[n+sd]=R[n+sd]||{n,sd,last:null,s7:0,s14:0,s30:0,d30:new Set(),pr:0,pain:[],notes:[],exs:{},reps7:0,vol7:0};
  Object.keys(u.logs).filter(d=>d<=now).sort().forEach(d=>{const lg=u.logs[d],ago=dn(now)-dn(d);Object.values(lg.ex||{}).forEach(e=>{const c=(e.sets||[]).filter(x=>x&&x.d);if(!c.length)return;
-  tagsOf(e.n,lg.pid).forEach(tg=>REG.filter(r=>r[1]==tg).forEach(r=>{(r[2]?['Sağ ','Sol ']:['']).forEach(sd=>{const k=c.filter(x=>{const lr=x.r2!==undefined||x.w2!==undefined;return !sd||!lr||(sd=='Sağ '?+x.r>0:+x.r2>0)}).length;if(!k)return;const o=g(r[0],sd);o.last=d;if(ago<=6)o.s7+=k;else if(ago<=27)o.pr+=k;if(ago<=29){o.s30+=k;o.d30.add(d)}})}))});
+  tagsOf(e.n,lg.pid).forEach(tg=>REG.filter(r=>r[1]==tg).forEach(r=>{(r[2]?['Sağ ','Sol ']:['']).forEach(sd=>{const k=c.filter(x=>{const lr=x.r2!==undefined||x.w2!==undefined;return !sd||!lr||(sd=='Sağ '?+x.r>0:+x.r2>0)}).length;if(!k)return;const o=g(r[0],sd);o.last=d;if(ago<=6){o.s7+=k;o.reps7+=c.reduce((a,x)=>(+x.r||0)+(+x.r2||0),0);o.vol7+=c.reduce((a,x)=>(+x.r||0)*(+x.w||0)+(+x.r2||0)*(+x.w2||0),0);o.exs[e.n]=(o.exs[e.n]||0)+k}else if(ago<=13)o.s14+=k;else if(ago<=27)o.pr+=k;if(ago<=29){o.s30+=k;o.d30.add(d)}})}))});
   [['Sağ ',lg.pre?.agS,lg.post?.agS],['Sol ',lg.pre?.agL,lg.post?.agL]].forEach(([sd,a,b])=>{if(ago<=29&&(a>=50||b>=50))REG.filter(r=>r[2]).forEach(r=>{if(R[r[0]+sd])R[r[0]+sd].pain.push(d)})});
   [lg.note,lg.post?.txt,lg.pre?.pnote].forEach(t=>tx(t).pain.forEach(p=>{const rg=REG.find(r=>p.reg&&(r[0].toLowerCase().replace(' ','')==p.reg.replace(' ','')));if(rg)Object.values(R).filter(o=>o.n==rg[0]&&(!p.side||o.sd.toLowerCase().trim()==p.side)).forEach(o=>o.notes.push(d+': '+String(t).slice(0,70)))}))});return Object.values(R).sort((a,b)=>b.s7-a.s7)}
 function bolgeTab0(){const u=U(),t=today(),L=regionLoad(u,t),mx=Math.max(1,...L.map(x=>x.s7)),km=(u.runs||[]).filter(r=>dn(t)-dn(r.d)<=6&&r.d<=t).reduce((a,r)=>a+(+r.km||0),0);
@@ -518,10 +520,139 @@ function dayInfo(d){const u=U(),t=today(),i=info(d),exs=exOf(d,i.pid),plan=exs.r
  if(nz(po.perf))L.push('Antrenman sonu performans: %'+po.perf);const pn=[nz(p.agS)&&p.agS>=30?'sağ %'+p.agS:'',nz(p.agL)&&p.agL>=30?'sol %'+p.agL:'',nz(po.agS)&&po.agS>=30?'sonrası sağ %'+po.agS:'',nz(po.agL)&&po.agL>=30?'sonrası sol %'+po.agL:'',...(s?s.pn.map(x=>'"ağrı yaptı": '+x):[])].filter(Boolean);L.push('Kayıtlı ağrı: '+(pn.length?pn.join(' · '):'yok'));if(r)L.push('Analiz sonucu: '+PN[r.rec]);
  return `<details class="card"><summary>Gün özeti ve analiz</summary><div style="font-size:14px;margin-top:8px">${L.join('<br>')}</div></details>`}
 function growth(){return `<h1>Gelişim</h1>${seg([['stat','İstat.'],['hist','Geçmiş'],['perf','Performans'],['rep','Analiz'],['bolge','Bölge'],['kol','Sağ/Sol']],gtab,'gtab')}`+({hist,perf:perfTab,rep:repList,bolge:bolgeTab,kol:lrTab,stat})[gtab]()}
-function fig(L){const t={},mx=Math.max(1,...L.map(x=>x.s7));L.forEach(x=>t[x.sd+x.n]=x.s7);
- const c=(k,x,y,r=10)=>{const v=(t[k]||0)/mx;return `<circle cx="${x}" cy="${y}" r="${r}" fill="${v?`rgba(255,${Math.round(190-v*130)},60,${.3+v*.65})`:'#ffffff14'}" stroke="#ffffff66"><title>${k}: ${t[k]||0} set (7 gün)</title></circle>`};
- return `<div class="card" style="text-align:center"><svg viewBox="0 0 200 270" width="190"><circle cx="100" cy="24" r="16" fill="none" stroke="#ffffff55"/>${c('Göğüs',100,75,17)}${c('Omuz',62,58)}${c('Omuz',138,58)}${c('Biceps',52,92)}${c('Biceps',148,92)}${c('Sağ Dirsek',46,122)}${c('Sol Dirsek',154,122)}${c('Sağ Ön kol',40,152)}${c('Sol Ön kol',160,152)}${c('Sağ Bilek',34,182,8)}${c('Sol Bilek',166,182,8)}${c('Bacaklar',82,225,14)}${c('Bacaklar',118,225,14)}<text x="8" y="14" fill="#9b9cb2" font-size="11">Sağ</text><text x="172" y="14" fill="#9b9cb2" font-size="11">Sol</text></svg><div class="m">Renk: son 7 gündeki set yükü (ön görünüm). Sırt: ${t['Sırt']||0} set · Triceps: ${t['Triceps']||0} set</div></div>`}
-function bolgeTab(){return fig(regionLoad(U(),today()))+bolgeTab0()}
+let anatView='front',selMus=null;
+function loadColor(sets,mx){if(!sets||sets<=0)return'#3a3a48';const r=sets/Math.max(mx,1);if(r<.15)return'#35d07f';if(r<.35)return'#84cc16';if(r<.55)return'#eab308';if(r<.75)return'#f97316';return'#ef4444'}
+function musDetail(key){const u=U(),t=today(),L=regionLoad(u,t),m=L.find(x=>(x.sd+x.n)===key);if(!m)return'<div class="card m">Veri yok</div>';
+ const mx=Math.max(1,...L.map(x=>x.s7)),w=m.pr/3,ch=w>0?m.s7/w:null;
+ const exList=Object.entries(m.exs||{}).sort((a,b)=>b[1]-a[1]).map(([n,s])=>`<div class="row" style="margin-top:4px"><span class="sp">${esc(n)}</span><span class="m">${s} set</span></div>`).join('')||'<div class="m">Hareket kaydı yok</div>';
+ const sideCmp=(()=>{if(!m.sd)return'';const other=L.find(x=>x.n===m.n&&x.sd&&x.sd!==m.sd);if(!other)return`<div class="m" style="margin-top:8px">Karşı taraf kaydı yok</div>`;
+  const diff=m.s7-other.s7;return`<div class="m" style="margin-top:8px">Sağ/Sol: ${m.sd.trim()} ${m.s7} set · ${other.sd.trim()} ${other.s7} set → ${diff===0?'eşit':diff>0?m.sd.trim()+' daha yüksek':other.sd.trim()+' daha yüksek'}</div>`})();
+ return`<div class="card" style="border-color:${loadColor(m.s7,mx)}"><div class="row"><b>${esc(m.sd+m.n)}</b><div class="sp"></div><button class="b" onclick="selMus=null;render(true)">Kapat</button></div>
+ <div class="m" style="margin-top:6px">Son çalışma: ${m.last?fd(m.last):'—'} · Renk sadece kayıtlı set yükünü gösterir (sakatlık/teşhis değildir)</div>
+ <div class="bento" style="margin:12px 0"><div class="card tile s2"><div class="m">7 gün</div><div class="big">${m.s7}</div><div class="m">set</div></div><div class="card tile s2"><div class="m">14 gün</div><div class="big">${m.s7+m.s14}</div><div class="m">set</div></div><div class="card tile s2"><div class="m">30 gün</div><div class="big">${m.s30}</div><div class="m">set · ${m.d30.size} gün</div></div></div>
+ <div class="m">Yük değişimi: ${ch!=null?`son 7 gün önceki ort. ${ch.toFixed(2)} katı`:'karşılaştırma verisi yok'}</div>
+ ${sideCmp}
+ <h2 style="margin-top:14px">Hareketler (7 gün)</h2>${exList}
+ <div class="m" style="margin-top:10px">Tekrar ≈ ${m.reps7||0} · Hacim ≈ ${Math.round(m.vol7||0)} kg</div>
+ <h2>Ağrı kayıtları</h2><div class="m">${m.pain.length?m.pain.slice(-5).map(fd).join(', ')+' (kol ağrısı ≥50)':'yok'}</div>
+ ${m.notes.length?`<h2>Notlar</h2><div class="m">${m.notes.slice(-3).map(esc).join('<br>')}</div>`:''}
+ ${(()=>{const tips=[];if(ch&&ch>=1.4)tips.push('Son 7 günde önceki ortalamaya göre belirgin yük artışı var. Hacmi %20–30 azaltmayı veya ek dinlenme günü eklemeyi düşünün.');
+  if(m.pain.length>=2)tips.push('Tekrarlayan ağrı kaydı mevcut. Ağrı artarsa ilgili hareketleri azaltın veya atlayın; gerekirse uzmana danışın.');
+  if(m.s7>=mx*0.7&&m.s7>=6)tips.push('Bu bölge son 7 günde en yüksek yüklerden birini almış. Toparlanma (uyku, beslenme, mobilite) öncelikli olsun.');
+  if(m.sd){const other=L.find(x=>x.n===m.n&&x.sd&&x.sd!==m.sd);if(other&&other.s7+m.s7>=6){const diff=m.s7-other.s7;if(Math.abs(diff)>=Math.max(3,(m.s7+other.s7)*0.35))tips.push(diff>0?`Bu taraf karşı tarafa göre daha fazla yük almış. Zayıf tarafa tek taraflı çalışma eklenebilir.`:`Bu taraf karşı tarafa göre daha az yük almış. Dengeli gelişim için bu tarafa odaklanılabilir.`)}}
+  if(['Bilek','Ön kol','Dirsek'].includes(m.n)&&m.s7>=4)tips.push('Bilek güreşi için kritik bölge. Pronasyon/supinasyon mobilitesi, kontrollü eklem çalışması ve 48–72 saat toparlanma faydalı olabilir.');
+  if(!tips.length&&m.s7>0)tips.push('Bu bölge için şu an belirgin uyarı yok. Mevcut yükü sürdürebilirsiniz.');
+  return tips.length?`<div class="warn ${tips[0].includes('uyarı yok')?'ok':''}" style="margin-top:12px"><b>Öneri</b><br>${tips.map(t=>'• '+t).join('<br>')}</div>`:''})()}</div>`}
+function anatSVG(L){const t={},mx=Math.max(1,...L.map(x=>x.s7));L.forEach(x=>t[x.sd+x.n]=x.s7);
+ const col=k=>loadColor(t[k]||0,mx);
+ const hit=(id,title,d,extra='')=>`<path id="${id}" class="mus${selMus===id?' active':''}" data-key="${id}" d="${d}" fill="${col(id)}" stroke="${selMus===id?'#fff':'#ffffff55'}" stroke-width="${selMus===id?2.5:1.2}" style="cursor:pointer;transition:fill .25s,filter .2s,stroke .2s" ${extra} onclick="selMus='${id}';render(true)"><title>${title}: ${t[id]||0} set (7 gün)</title></path>`;
+ // Simplified but professional anatomical paths (front view, subject right = SVG left)
+ if(anatView==='front'){
+  return`<svg viewBox="0 0 220 420" width="100%" style="max-width:280px;margin:0 auto;display:block" role="img" aria-label="Ön vücut kas haritası">
+  <defs><linearGradient id="skin" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2a2a36"/><stop offset="100%" stop-color="#1a1a24"/></linearGradient></defs>
+  <!-- Body outline -->
+  <ellipse cx="110" cy="28" rx="22" ry="26" fill="url(#skin)" stroke="#ffffff22"/>
+  <path d="M88 52 C70 70 62 110 68 150 C72 175 78 200 85 230 L90 280 C92 310 95 340 100 370 L110 400 L120 370 C125 340 128 310 130 280 L135 230 C142 200 148 175 152 150 C158 110 150 70 132 52 Z" fill="url(#skin)" stroke="#ffffff18"/>
+  <!-- Chest -->
+  ${hit('Göğüs','Göğüs','M78 95 C85 85 95 82 110 82 C125 82 135 85 142 95 C145 110 140 125 130 132 C120 138 100 138 90 132 C80 125 75 110 78 95 Z')}
+  <!-- Shoulders -->
+  ${hit('Sağ Omuz','Sağ Omuz','M55 85 C48 95 45 115 52 130 C60 140 72 138 78 125 C80 110 75 95 68 88 Z')}
+  ${hit('Sol Omuz','Sol Omuz','M165 85 C172 95 175 115 168 130 C160 140 148 138 142 125 C140 110 145 95 152 88 Z')}
+  <!-- Biceps -->
+  ${hit('Sağ Biceps','Sağ Biceps','M58 135 C52 150 50 175 55 195 C62 205 72 200 75 185 C76 165 72 145 68 138 Z')}
+  ${hit('Sol Biceps','Sol Biceps','M162 135 C168 150 170 175 165 195 C158 205 148 200 145 185 C144 165 148 145 152 138 Z')}
+  <!-- Elbows / Dirsek -->
+  ${hit('Sağ Dirsek','Sağ Dirsek','M54 190 C50 198 52 210 58 212 C64 210 66 198 62 192 Z')}
+  ${hit('Sol Dirsek','Sol Dirsek','M166 190 C170 198 168 210 162 212 C156 210 154 198 158 192 Z')}
+  <!-- Forearms -->
+  ${hit('Sağ Ön kol','Sağ Ön kol','M52 200 C48 220 46 245 50 265 C55 275 65 272 68 255 C70 235 65 215 60 205 Z')}
+  ${hit('Sol Ön kol','Sol Ön kol','M168 200 C172 220 174 245 170 265 C165 275 155 272 152 255 C150 235 155 215 160 205 Z')}
+  <!-- Wrists -->
+  ${hit('Sağ Bilek','Sağ Bilek','M48 268 C46 278 48 288 54 290 C60 288 62 278 58 270 Z')}
+  ${hit('Sol Bilek','Sol Bilek','M172 268 C174 278 172 288 166 290 C160 288 158 278 162 270 Z')}
+  <!-- Abs -->
+  ${hit('Karın','Karın','M92 145 C98 140 122 140 128 145 C132 165 130 190 125 210 C118 220 102 220 95 210 C90 190 88 165 92 145 Z')}
+  <!-- Quads -->
+  ${hit('Quadriceps','Quadriceps','M88 235 C82 260 80 295 85 330 C92 345 108 345 115 330 C120 295 118 260 112 235 C108 228 92 228 88 235 Z')}
+  <!-- Calves front approx -->
+  ${hit('Baldır','Baldır','M90 340 C88 360 90 380 95 395 C100 400 110 400 115 395 C120 380 122 360 120 340 C115 332 95 332 90 340 Z')}
+  <!-- Labels -->
+  <text x="20" y="20" fill="#9b9cb2" font-size="12" font-weight="600">SAĞ</text>
+  <text x="175" y="20" fill="#9b9cb2" font-size="12" font-weight="600">SOL</text>
+  </svg>`}
+ // Back view
+ return`<svg viewBox="0 0 220 420" width="100%" style="max-width:280px;margin:0 auto;display:block" role="img" aria-label="Arka vücut kas haritası">
+  <defs><linearGradient id="skinb" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2a2a36"/><stop offset="100%" stop-color="#1a1a24"/></linearGradient></defs>
+  <ellipse cx="110" cy="28" rx="22" ry="26" fill="url(#skinb)" stroke="#ffffff22"/>
+  <path d="M88 52 C70 70 62 110 68 150 C72 175 78 200 85 230 L90 280 C92 310 95 340 100 370 L110 400 L120 370 C125 340 128 310 130 280 L135 230 C142 200 148 175 152 150 C158 110 150 70 132 52 Z" fill="url(#skinb)" stroke="#ffffff18"/>
+  <!-- Traps / upper back -->
+  ${hit('Sırt','Sırt','M75 70 C85 60 135 60 145 70 C150 95 148 130 140 155 C130 170 90 170 80 155 C72 130 70 95 75 70 Z')}
+  <!-- Lower back / Bel -->
+  ${hit('Bel','Bel','M88 160 C95 155 125 155 132 160 C135 180 132 200 125 215 C118 222 102 222 95 215 C88 200 85 180 88 160 Z')}
+  <!-- Shoulders back -->
+  ${hit('Sağ Omuz','Sağ Omuz','M55 85 C48 95 45 115 52 130 C60 140 72 138 78 125 C80 110 75 95 68 88 Z')}
+  ${hit('Sol Omuz','Sol Omuz','M165 85 C172 95 175 115 168 130 C160 140 148 138 142 125 C140 110 145 95 152 88 Z')}
+  <!-- Triceps -->
+  ${hit('Sağ Triceps','Sağ Triceps','M58 135 C52 150 50 175 55 195 C62 205 72 200 75 185 C76 165 72 145 68 138 Z')}
+  ${hit('Sol Triceps','Sol Triceps','M162 135 C168 150 170 175 165 195 C158 205 148 200 145 185 C144 165 148 145 152 138 Z')}
+  <!-- Elbows -->
+  ${hit('Sağ Dirsek','Sağ Dirsek','M54 190 C50 198 52 210 58 212 C64 210 66 198 62 192 Z')}
+  ${hit('Sol Dirsek','Sol Dirsek','M166 190 C170 198 168 210 162 212 C156 210 154 198 158 192 Z')}
+  <!-- Forearms back -->
+  ${hit('Sağ Ön kol','Sağ Ön kol','M52 200 C48 220 46 245 50 265 C55 275 65 272 68 255 C70 235 65 215 60 205 Z')}
+  ${hit('Sol Ön kol','Sol Ön kol','M168 200 C172 220 174 245 170 265 C165 275 155 272 152 255 C150 235 155 215 160 205 Z')}
+  <!-- Wrists -->
+  ${hit('Sağ Bilek','Sağ Bilek','M48 268 C46 278 48 288 54 290 C60 288 62 278 58 270 Z')}
+  ${hit('Sol Bilek','Sol Bilek','M172 268 C174 278 172 288 166 290 C160 288 158 278 162 270 Z')}
+  <!-- Hamstrings -->
+  ${hit('Hamstring','Hamstring','M88 240 C82 265 80 300 85 335 C92 350 108 350 115 335 C120 300 118 265 112 240 C108 233 92 233 88 240 Z')}
+  <!-- Calves -->
+  ${hit('Baldır','Baldır','M90 345 C88 365 90 385 95 400 C100 405 110 405 115 400 C120 385 122 365 120 345 C115 337 95 337 90 345 Z')}
+  <text x="20" y="20" fill="#9b9cb2" font-size="12" font-weight="600">SAĞ</text>
+  <text x="175" y="20" fill="#9b9cb2" font-size="12" font-weight="600">SOL</text>
+  </svg>`}
+function bolgeSuggestions(L){
+ const tips=[],mx=Math.max(1,...L.map(x=>x.s7)),hi=L.filter(x=>x.s7>=mx*0.55&&x.s7>0).slice(0,4),
+  pain=L.filter(x=>x.pain.length>=1),imb=[];
+ // Sağ/Sol dengesizlik
+ const pairs={};L.filter(x=>x.sd).forEach(x=>{const k=x.n;(pairs[k]=pairs[k]||{})[x.sd.trim()]=x});
+ Object.entries(pairs).forEach(([n,s])=>{if(s.Sağ&&s.Sol){const a=s.Sağ.s7,b=s.Sol.s7,d=Math.abs(a-b),avg=(a+b)/2;if(avg>=3&&d>=Math.max(3,avg*0.4))imb.push({n,a,b,d,stronger:a>b?'Sağ':'Sol',weaker:a>b?'Sol':'Sağ'})}});
+ // Yüksek yük
+ if(hi.length){const names=hi.map(x=>x.sd+x.n).join(', ');
+  tips.push({t:'yüksek',title:'Yüksek bölgesel yük',body:`Son 7 günde en yüksek yük: <b>${names}</b>. Bu bölgelerde hacmi bir miktar düşürmek, setler arası dinlenmeyi uzatmak veya teknik/hafif gün eklemek toparlanmayı destekleyebilir.`})}
+ // Ağrı + yük
+ const painHi=pain.filter(x=>x.s7>=4);if(painHi.length){
+  tips.push({t:'agri',title:'Ağrı kaydı olan bölgeler',body:`${painHi.map(x=>x.sd+x.n).join(', ')} bölgesinde hem yük hem ağrı kaydı var. Ağrı artarsa ilgili hareketleri azaltın veya atlayın; gerekirse uzmana danışın. Bu bir teşhis değildir.`})}
+ // Dengesizlik
+ if(imb.length){tips.push({t:'denge',title:'Sağ / Sol dengesizlik',body:imb.map(x=>`<b>${x.n}</b>: ${x.stronger} taraf daha yüksek yük almış (${x.d} set fark). Zayıf tarafa tek taraflı (unilateral) çalışma veya daha kontrollü tempo eklenebilir.`).join('<br>')})}
+ // Bilek güreşi özel
+ const aw=['Bilek','Ön kol','Dirsek','Biceps'],awHi=L.filter(x=>aw.includes(x.n)&&x.s7>=mx*0.4&&x.s7>2);
+ if(awHi.length){tips.push({t:'aw',title:'Bilek güreşi odaklı not',body:`${awHi.map(x=>x.sd+x.n).join(', ')} yüksek yük altında. Bilek ve ön kol için 48–72 saat toparlanma, eklem mobilitesi ve kontrollü pronasyon/supinasyon çalışmaları faydalı olabilir. Masa gününden hemen önce aşırı yorgunluk bırakmamaya dikkat edin.`})}
+ // Düşük / ihmal
+ const low=['Sırt','Göğüs','Quadriceps','Hamstring'].filter(n=>!L.some(x=>x.n===n&&x.s7>=3));
+ if(low.length&&L.some(x=>x.s7>0)){tips.push({t:'eksik',title:'Düşük kayıtlı bölgeler',body:`${low.join(', ')} için son 7 günde düşük veya hiç set kaydı yok. Program dengesini kontrol edin; bu bölgeler de genel performansı ve sakatlanma riskini etkiler.`})}
+ // Genel olumlu
+ if(!tips.length&&L.some(x=>x.s7>0)){tips.push({t:'ok',title:'Dengeli görünüm',body:'Son 7 günlük kayıtlara göre belirgin aşırı yük veya dengesizlik sinyali yok. Mevcut planı sürdürebilir, toparlanma ve beslenmeye dikkat etmeye devam edebilirsiniz.'})}
+ if(!L.some(x=>x.s7>0)){tips.push({t:'bos',title:'Henüz veri yok',body:'Öneri üretebilmek için antrenmanlarda setleri işaretleyip kaydetmeniz yeterli. Birkaç antrenman sonrası bölgesel öneriler burada görünecek.'})}
+ const icon={yüksek:'⚠️',agri:'🔴',denge:'⚖️',aw:'💪',eksik:'📉',ok:'✅',bos:'ℹ️'};
+ return`<div class="card" style="border-left:4px solid #6366f1"><b>Bölgesel Öneriler</b><div class="m" style="margin:4px 0 10px">Kayıtlı yüke göre otomatik üretilir. Kişisel tıbbi tavsiye yerine geçmez.</div>
+  ${tips.map(x=>`<div style="margin-top:10px;padding:10px 12px;background:var(--p2);border-radius:12px"><div style="font-weight:700;margin-bottom:4px">${icon[x.t]||'•'} ${x.title}</div><div style="font-size:14px;line-height:1.45">${x.body}</div></div>`).join('')}
+ </div>`}
+function bolgeTab(){const L=regionLoad(U(),today()),mx=Math.max(1,...L.map(x=>x.s7));
+ const legend=`<div class="row" style="gap:10px;flex-wrap:wrap;justify-content:center;margin:10px 0 4px;font-size:12px">
+  <span><i class="dot" style="background:#3a3a48"></i>Veri yok</span>
+  <span><i class="dot" style="background:#35d07f"></i>Düşük</span>
+  <span><i class="dot" style="background:#84cc16"></i>Orta-düşük</span>
+  <span><i class="dot" style="background:#eab308"></i>Orta</span>
+  <span><i class="dot" style="background:#f97316"></i>Yüksek</span>
+  <span><i class="dot" style="background:#ef4444"></i>Çok yüksek</span>
+ </div>`;
+ return bolgeSuggestions(L)+`<div class="card"><div class="row"><b>İnteraktif Kas Haritası</b><div class="sp"></div>
+  <div class="seg" style="margin:0;max-width:200px"><button class="${anatView==='front'?'on':''}" onclick="anatView='front';render(true)">Ön</button><button class="${anatView==='back'?'on':''}" onclick="anatView='back';render(true)">Arka</button></div></div>
+  <div class="m" style="margin:6px 0 10px">Kas bölgelerine dokunarak detay gör. Renkler son 7 günlük kayıtlı set yükünü temsil eder; sakatlık veya toparlanma ölçümü değildir.</div>
+  ${anatSVG(L)}${legend}
+  ${selMus?musDetail(selMus):'<div class="m" style="text-align:center;margin-top:8px">Bir kas bölgesi seçin</div>'}
+ </div>`+bolgeTab0()}
 function dayView(d){return dayView0(d)+dayInfo(d)}
 /*ENDV3*/
 normS(S);save();
