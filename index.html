@@ -98,8 +98,8 @@ const dow=s=>(new Date(dn(s)*864e5).getUTCDay()+6)%7; // Pazartesi=0
 const GUN=['Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi','Pazar'];
 const AY=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
 const SAAT=['18:30–20:30','Okul sonrası','18:30–20:30','18:40 sonrası','18:40 sonrası','18:30–20:30','Dinlenme / koşu'];
-const COL={bilek:'#4f8cff',basinc:'#ff5a5a',onbilek:'#a46bff',rotasyon:'#ff9a3c',gogus:'#4cc36b',sirt:'#31cfd8',kolbacak:'#f2d03b',kol:'#f2d03b',bacak:'#c9b02e',masa:'#ff7ac0',dinlen:'#8a8a92'};
-const WARN={basinc:'Side pressure: dirsek ve üst kolda yüksek yük oluşur. Isınmayı atlama.',sirt:'Ağır sırt çalışması ertesi günkü rotasyon/bilek antrenmanını etkileyebilir.',kolbacak:'Cumartesi masa antrenmanı var: kol hacmi bilerek azaltıldı.',kol:'Tam kol programı cumartesi masa performansını etkileyebilir.',onbilek:'Ağır biceps çalışmasından sonra ön bilek için toparlanmaya dikkat et.'};
+const COL={bilek:'#4f8cff',basinc:'#ff5a5a',onbilek:'#a46bff',rotasyon:'#ff9a3c',gogus:'#4cc36b',sirt:'#31cfd8',kolbacak:'#f2d03b',kol:'#f2d03b',bacak:'#c9b02e',masa:'#ff7ac0',dinlen:'#8a8a92',sirtgogus:'#2fbf9b',bilekkontrol:'#9bd13f'};
+const WARN={basinc:'Side pressure: dirsek ve üst kolda yüksek yük oluşur. Isınmayı atlama.',sirt:'Ağır sırt çalışması ertesi günkü rotasyon/bilek antrenmanını etkileyebilir.',kolbacak:'Cumartesi masa antrenmanı var: kol hacmi bilerek azaltıldı.',kol:'Tam kol programı sonraki masa antrenmanı performansını etkileyebilir.',onbilek:'Ağır biceps çalışmasından sonra ön bilek için toparlanmaya dikkat et.'};
 function mk(){const x=(a)=>a.map(([n,s,r,l,nt])=>nt?({id:uid(),n,s,r,l,nt}):({id:uid(),n,s,r,l}));
 const M='Maksimum',oh='Orta-hafif',oa='Orta-ağır',ao='Ağır-orta';
 const bac=[['Squat veya leg press',3,'4–6','Ağır'],['Romanian deadlift',3,'6–8','Orta-ağır'],['Leg curl',3,'8–12','Orta'],['Calf raise',3,'10–15','Orta']];
@@ -111,12 +111,14 @@ onbilek:{name:'Ön Bilek Antrenmanı',ex:x([['İstasyonda karşıdan iki ipi kem
 rotasyon:{name:'Rotasyon Antrenmanı',ex:x([['İstasyonda içe yuvarlama aleti ve lastikle kendine çekerek dış rotasyon',4,M,oa],['İple rotasyon, bilek hizasına destek koyarak',4,M,'Hafif-orta'],['İstasyonda yan pozisyonda karşıdan lastikle çekerek yana yatış',4,M,oa],['İple hammer',4,M,ao],['Parmak',4,M,oa],['İstasyonda karşıdan çekerek savunma rotasyonu',4,M,oa]])},
 sirt:{name:'Sırt + Triceps + Omuz',ex:x([['Lat pulldown',3,'6–8','S.K.'],['Close-Grip Lat Pulldown',3,'6–8','S.K.'],['Close-Grip Seated Cable Row',2,'6–8','S.K.'],['Pronated-Grip Row',['2–3'][0],'6–8','S.K.'],['Straight-Bar Triceps Pushdown',3,'6–8','Ağır-orta'],['Rope Triceps Pushdown',3,'8–10','Orta-hafif','Hissederek'],['Dumbbell Lateral Raise',3,'12','Orta-hafif'],['Cable Reverse Fly',2,'12–15','Orta-hafif'],['Face Pull',2,'12–15','Orta-hafif']])},
 gogus:{name:'Göğüs + Biceps + Omuz',ex:x([['Incline bench press',3,'5–6','Ağır'],['Incline dumbbell press (hissederek)',['2–3'][0],'5–8','Ağır'],['Dumbbell Pullover',3,'6–8','Orta'],['Cable fly',3,'10–12','Orta-hafif'],['Single-Arm Dumbbell Preacher Curl (Drop Set)',2,M,oh],['İsteğe bağlı biceps hareketi',['2–3'][0],'Serbest','Serbest'],['Dips',2,M,M],['Dumbbell Lateral Raise',3,'10–12','Orta-hafif']])},
+sirtgogus:{name:'Sırt + Göğüs',ex:x([['Lat pulldown',3,'6–8','S.K.'],['Close-Grip Lat Pulldown',3,'6–8','S.K.'],['Close-Grip Seated Cable Row',2,'6–8','S.K.'],['Pronated-Grip Row',['2–3'][0],'6–8','S.K.'],['Incline bench press',3,'5–6','Ağır'],['Incline dumbbell press (hissederek)',['2–3'][0],'5–8','Ağır'],['Dumbbell Pullover',3,'6–8','Orta'],['Cable fly',3,'10–12','Orta-hafif'],['Dumbbell Lateral Raise',3,'12','Orta-hafif'],['Cable Reverse Fly',2,'12–15','Orta-hafif'],['Face Pull',2,'12–15','Orta-hafif'],['Single-Arm Dumbbell Preacher Curl (Drop Set)',2,M,oh]])},
+bilekkontrol:{name:'Bilek Kontrolü Antrenmanı',ex:[]},
 kol:{name:'Kol Antrenmanı (tam)',ex:x([['EZ-Bar Curl',['3–4'][0],'5–6',M,'PR denemesi olabilir'],['Wide-Grip Barbell Curl',3,'6–10','Ağır / orta','2 set ağır, 1 set orta'],['Dumbbell Shoulder Press',3,'5–8',oa],['Dumbbell Lateral Raise',3,'8–12','Orta-hafif'],['Straight-Bar Triceps Pushdown',2,'5–8',oa],['Triceps düz demiri ileri itme (hissederek)',3,'8–10','Orta-hafif'],['Triceps iple ileri itme',3,'8–10','Orta-hafif'],['Triceps aşağıdan yukarı iple',2,'10–12','Hafif'],['EZ-Bar Reverse Curl',3,M,'Ağır / orta','2 set ağır, 1 set hissederek'],['Dumbbell Hammer Curl',3,'5–8',oa]])},
 bacak:{name:'Bacak',ex:x(bac)},
 masa:{name:'Masa Antrenmanı',note:'Maç yoğunluğu varsayılan %70–80.',ex:x([['Teknik çalışma',1,'—','—'],['İç çekiş',1,'—','—'],['Dış çekiş',1,'—','—'],['Başlangıç ve patlayıcılık',1,'—','—'],['Savunma',1,'—','—'],['Kontrollü maçlar (%70–80)',1,'—','%70–80']])},
 dinlen:{name:'Toparlanma',ex:[]}}}
 let _u=0;function uid(){return 'x'+Date.now().toString(36)+(_u++)}
-const W=[['bilek','gogus','rotasyon','sirt','kol','masa','dinlen'],['basinc','gogus','onbilek','sirt','kol','masa','dinlen'],['rotasyon','gogus','bilek','sirt','kol','masa','dinlen'],['onbilek','gogus','basinc','sirt','kol','masa','dinlen']];
+const W=[['bilek','sirtgogus','masa','bilekkontrol','kol','rotasyon','dinlen'],['basinc','sirtgogus','masa','bilekkontrol','kol','onbilek','dinlen'],['rotasyon','sirtgogus','masa','bilekkontrol','kol','bilek','dinlen'],['onbilek','sirtgogus','masa','bilekkontrol','kol','basinc','dinlen']];
 function newUser(){const t=today();return{start:add(t,-dow(t)),tpl:mk(),sched:JSON.parse(JSON.stringify(W)),ov:{},dayEx:{},logs:{},runs:[],hist:[]}}
 try{const _r=localStorage.getItem('wt2');if(_r&&!localStorage.getItem('wt2_yedek_v2'))localStorage.setItem('wt2_yedek_v2',_r)}catch(e){}
 let S;try{S=JSON.parse(localStorage.getItem('wt2'))}catch(e){}
@@ -154,7 +156,7 @@ function dayView0(d){
  let h=`<div class="row"><button class="b" onclick="go('cal')">‹ Takvim</button><div class="sp"></div><button class="b" onclick="openDay('${add(d,-1)}')">‹</button><button class="b" onclick="openDay('${add(d,1)}')">›</button></div>
  <div class="card hero" style="--c:${COL[i.pid]};margin-top:12px"><div class="m">${GUN[dow(d)]} · ${d.split('-').reverse().join('.')} · ${i.wk+1}. hafta · ${SAAT[dow(d)]}</div><h1>${esc(t.name)}</h1>
  ${tot?`<div class="ring" style="--p:${Math.min(100,dd/tot*100)}"><b>${dd}</b><span>/ ${tot} set</span></div>
- <button class="b pri" style="width:100%;min-height:52px;margin-top:14px;font-size:16px" onclick="${nxt?(dd?`openEx('${nxt.id}')`:`startDay('${d}')`):`finish('${d}')`}">${nxt?(dd?'Devam et':'Antrenmanı başlat'):'Antrenmanı bitir'}</button>`:'<div class="m" style="margin-top:6px">Dinlenme günü. İstersen Koşu sekmesinden hafif koşu ekle.</div>'}</div>
+ <button class="b pri" style="width:100%;min-height:52px;margin-top:14px;font-size:16px" onclick="${nxt?(dd?`openEx('${nxt.id}')`:`startDay('${d}')`):`finish('${d}')`}">${nxt?(dd?'Devam et':'Antrenmanı başlat'):'Antrenmanı bitir'}</button>`:(i.pid=='bilekkontrol'?'<div class="m" style="margin-top:6px">Bu antrenmana henüz hareket eklenmedi. Gün ayarları → Hareketleri düzenle ile ekleyebilirsin.</div>':'<div class="m" style="margin-top:6px">Dinlenme günü. İstersen Koşu sekmesinden hafif koşu ekle.</div>')}</div>
  ${WARN[i.pid]?`<div class="warn">${WARN[i.pid]}</div>`:''}${exs.length?preCard(d):''}`;
  exs.forEach((e,k)=>{const n=nSets(e.s),c=exDone(d,e),L=lg.ex[e.id]?.sets||[];
   h+=`<div class="exrow ${c>=n?'fin':''}" onclick="openEx('${e.id}')"><div class="ix">${c>=n?'✓':k+1}</div><div class="sp"><div class="en">${esc(e.n)}</div><div class="m">${esc(e.s)} set × ${esc(e.r)} · ${esc(e.l)}${isLR(e,i.pid)?' · Sağ / Sol':''}</div>${e.nt?`<div class="m">${esc(e.nt)}</div>`:''}</div><div class="dts">${Array.from({length:n},(_,j)=>`<i class="dt ${L[j]?.d?'on':''}"></i>`).join('')}</div></div>`});
@@ -164,7 +166,7 @@ function dayView0(d){
  <button class="b" onclick="editOpen('${i.pid}','${d}','day')">Hareketleri düzenle</button>${u.dayEx[d]?`<button class="b" onclick="resetDay('${d}')">Gün düzenlemesini sıfırla</button>`:''}</div>
  ${i.ov?'<div class="m" style="margin-top:8px">Bu güne özel değişiklik var, döngünün diğer günleri etkilenmedi.</div>':''}</details>`;
  return h}
-const LRP=['bilek','basinc','onbilek','rotasyon'];
+const LRP=['bilek','basinc','onbilek','rotasyon','bilekkontrol'];
 function isLR(e,pid){return e.lr!==undefined?e.lr:(LRP.includes(pid)||/biceps|hammer|barbell curl|ez-bar|preacher curl|reverse curl/i.test(e.n))&&!/barfiks/i.test(e.n)}
 function exView(d){
  const u=U(),i=info(d),exs=exOf(d,i.pid),ix=exs.findIndex(e=>e.id==cx);if(ix<0){cx=null;return dayView(d)}
@@ -234,7 +236,7 @@ function home0(){const u=U(),t=today(),i=info(t),exs=exOf(t,i.pid),x=sumOf(t),to
  const last=Object.keys(u.logs).sort().reverse().find(d=>d<t&&sumOf(d).s);
  return `<div class="m">${GUN[dow(t)]}, ${t.split('-').reverse().join('.')} · ${i.wk+1}. hafta</div><h1>${hi}, ${esc(u.name.split(' ')[0])}</h1>
  <div class="bento" style="margin-top:14px"><div class="card hero s6" style="--c:${COL[i.pid]}"><div class="m">Bugün · ${SAAT[dow(t)]}</div><h1>${esc(u.tpl[i.pid].name)}</h1>
- ${tot?`<div class="ring" style="--p:${Math.min(100,x.s/tot*100)}"><b>${x.s}</b><span>/ ${tot} set</span></div><div class="pv">${exs.slice(0,5).map(e=>`<span>${esc(e.n.split(' ').slice(0,3).join(' '))}</span>`).join('')}${exs.length>5?`<span>+${exs.length-5}</span>`:''}</div><button class="b pri" style="margin-top:16px;min-height:50px;padding:0 28px;font-size:16px" onclick="startDay('${t}')">${x.s?'Devam et':'Antrenmanı başlat'}</button>`:'<div class="m" style="margin-top:6px">Dinlenme günü. İstersen hafif koşu veya toparlanma yap.</div><button class="b pri" style="margin-top:14px" onclick="openDay(\''+t+'\')">Günü aç</button>'}</div>
+ ${tot?`<div class="ring" style="--p:${Math.min(100,x.s/tot*100)}"><b>${x.s}</b><span>/ ${tot} set</span></div><div class="pv">${exs.slice(0,5).map(e=>`<span>${esc(e.n.split(' ').slice(0,3).join(' '))}</span>`).join('')}${exs.length>5?`<span>+${exs.length-5}</span>`:''}</div><button class="b pri" style="margin-top:16px;min-height:50px;padding:0 28px;font-size:16px" onclick="startDay('${t}')">${x.s?'Devam et':'Antrenmanı başlat'}</button>`:'<div class="m" style="margin-top:6px">'+(i.pid=='bilekkontrol'?'Bu antrenmana henüz hareket eklenmedi.':'Dinlenme günü. İstersen hafif koşu veya toparlanma yap.')+'</div><button class="b pri" style="margin-top:14px" onclick="openDay(\''+t+'\')">Günü aç</button>'}</div>
  <div class="card tile s2" onclick="go('cal')"><div class="m">Bu hafta</div><div class="big">${w}<small> / ${p}</small></div><div class="bar" style="margin-top:8px"><i style="width:${p?w/p*100:0}%"></i></div></div>
  <div class="card tile s2" onclick="go('stat')"><div class="m">Son 7 gün hacim</div><div class="big">${(vol/1000).toFixed(1)}<small> ton</small></div><div class="m">${sets} set</div></div>
  <div class="card tile s2 w" ${last?`onclick="openDay('${last}')"`:''}><div class="m">Son antrenman</div>${last?`<div class="big" style="font-size:24px">${esc(u.tpl[u.logs[last].pid]?.name||'')}</div><div class="m">${last.split('-').reverse().join('.')} · ${sumOf(last).s} set</div>`:'<div class="big" style="font-size:20px">Henüz yok</div>'}</div>
@@ -307,6 +309,24 @@ function migNames(o){const t0=today();
 (function(){if(S.mig3)return;
  try{localStorage.setItem('wt2_yedek_mig3',JSON.stringify(S))}catch(e){}
  migNames(S);S.mig3=1;save()})();
+(function(){if(S.mig4)return;
+ try{localStorage.setItem('wt2_yedek_mig4',JSON.stringify(S))}catch(e){}
+ /* Haftalık program güncellemesi: kayıtlar, hesaplar ve eski şablonlar silinmez. Geçmiş kayıtlı günler eski programlarıyla sabitlenir. */
+ const NEW=mk();
+ Object.values(S.users||{}).forEach(u=>{if(!u||!u.tpl||!u.sched||!u.start)return;
+  u.ov=u.ov||{};u.dayEx=u.dayEx||{};u.logs=u.logs||{};
+  const sm=dn(u.start)-dow(u.start),bs=(sc,d)=>sc[(((Math.floor((dn(d)-sm)/7))%4)+4)%4][dow(d)];
+  const oldS=JSON.parse(JSON.stringify(u.sched));
+  u.sched.forEach(w=>{const c=w[2],m=w[5];w[1]='sirtgogus';w[2]=m;w[3]='bilekkontrol';w[5]=c});
+  ['sirtgogus','bilekkontrol'].forEach(k=>{if(!u.tpl[k])u.tpl[k]=NEW[k]});
+  const nd={},ks=Object.keys(u.dayEx);
+  Object.keys(u.logs).forEach(d=>{if(!u.ov[d]){const o=bs(oldS,d);if(o!==bs(u.sched,d))u.ov[d]=o}});
+  ks.forEach(d=>{const o=bs(oldS,d),n=bs(u.sched,d);
+   if(u.ov[d]||u.logs[d]||o===n){nd[d]=u.dayEx[d];return}
+   const w=dow(d),t=w==2?add(d,3):w==5?add(d,-3):null;
+   if(t&&bs(oldS,d)===bs(u.sched,t)&&!u.logs[t]&&!u.ov[t]&&!nd[t])nd[t]=u.dayEx[d]});
+  u.dayEx=nd});
+ S.mig4=1;save()})();
 /*ENGINE*/
 const nz=x=>x!==undefined&&x!==null&&x!==''&&!isNaN(+x);
 const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
